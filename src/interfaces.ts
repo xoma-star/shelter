@@ -4,10 +4,10 @@ export type playerSchema = {
     ava: string,
     name: string,
     isHost: boolean,
-    stats: {
-        health: string
-    }
+    stats: {[key: typeof statsKeys[number]]: string},
+    revealed: string[]
 }
+
 export interface roomSchema{
     id: number,
     players: playerSchema[],
@@ -20,3 +20,5 @@ export interface roomSchema{
     distress?: string,
     currentTurn: number
 }
+
+export const statsKeys = ['health', 'hobby', 'threat']
