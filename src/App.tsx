@@ -48,9 +48,9 @@ function App() {
     }, [userData])
 
     useEffect(() => {
-        //setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
+        setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
         bridge.send('VKWebAppInit').then(() => bridge.send("VKWebAppGetUserInfo"))
-        setWS(new WebSocket('ws://localhost:5500'))
+        //setWS(new WebSocket('ws://localhost:5500'))
     },[])
 
     useEffect(() => {
