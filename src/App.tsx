@@ -37,8 +37,8 @@ function App() {
     })
 
     useEffect(() => {
-        //setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
-        setWS(new WebSocket('ws://localhost:5500'))
+        setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
+        //setWS(new WebSocket('ws://localhost:5500'))
         bridge.subscribe(e => {
             if(e.detail.type === 'VKWebAppUpdateConfig') setColorScheme(e.detail.data.scheme)
             //if(e.detail.type === '')

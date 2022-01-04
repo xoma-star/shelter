@@ -1,7 +1,6 @@
 import {
-    Avatar, Button,
+    Button,
     Caption,
-    Cell,
     FormItem,
     Group,
     Header,
