@@ -37,14 +37,16 @@ function App() {
     })
 
     useEffect(() => {
-        setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
-        //setWS(new WebSocket('ws://localhost:5500'))
         bridge.subscribe(e => {
             if(e.detail.type === 'VKWebAppUpdateConfig') setColorScheme(e.detail.data.scheme)
+            if(e.detail.type === 'VKWebAppGetUserInfoResult') setUserData({...userData, ava: e.detail.data.photo_100, name: e.detail.data.first_name})
         })
-        bridge.send('VKWebAppInit').then(() => {
+    }, [userData])
 
-        })
+    useEffect(() => {
+        setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
+        bridge.send('VKWebAppInit').then(() => bridge.send("VKWebAppGetUserInfo"))
+        //setWS(new WebSocket('ws://localhost:5500'))
     },[])
 
     useEffect(() => {
