@@ -41,7 +41,6 @@ function App() {
         //setWS(new WebSocket('ws://localhost:5500'))
         bridge.subscribe(e => {
             if(e.detail.type === 'VKWebAppUpdateConfig') setColorScheme(e.detail.data.scheme)
-            //if(e.detail.type === '')
         })
         bridge.send('VKWebAppInit').then(() => {
 
