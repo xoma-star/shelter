@@ -10,6 +10,7 @@ import {
 } from "@vkontakte/vkui";
 import {roomSchema, stringVoidFunction} from "../interfaces";
 import React from "react";
+import PlayersList from "./PlayersList";
 
 interface props{
     setModal: stringVoidFunction,
@@ -34,9 +35,10 @@ const TurnEndModal = ({setModal, roomData, userData, modal, ws}: props) => {
             {(roomData?.players[0].id === userData.id) && <Group>
                 <div style={{display: 'flex', padding: 10}}>
                     <Button onClick={endTurn} stretched size={'l'}>Следующий круг</Button>
-                    <div style={{width: 10}}/>
-                    <Button stretched size={'l'}>Голосование</Button>
                 </div>
+                <Group header={<Header mode={'secondary'}>Голосование</Header>}>
+                    <PlayersList roomData={roomData} onclick={v => ws.send(JSON.stringify({type: 'kickPlayer', data: {playerId: v, roomId: roomData?.id}}))} />
+                </Group>
             </Group>}
             {(roomData?.players[0].id !== userData.id) && <Group>
                 <Caption style={{textAlign: 'center', color: 'var(--icon_outline_secondary)'}} weight={'medium'} level={'1'}>

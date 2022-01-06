@@ -25,7 +25,8 @@ const waitingRoomPanel = ({setActiveView, roomData, userData, ws}: input) => {
         ws?.send(JSON.stringify({
             type: 'startRoom',
             data: {
-                roomId: roomData?.id
+                roomId: roomData?.id,
+                roomData: roomData
             }
         }))
     }
@@ -36,7 +37,7 @@ const waitingRoomPanel = ({setActiveView, roomData, userData, ws}: input) => {
                 type: 'disconnectRoom',
                 data: {
                     roomId: roomData?.id,
-                    userId: userData.id
+                    userId: userData.id,
                 }
             }))
         }}/>}>

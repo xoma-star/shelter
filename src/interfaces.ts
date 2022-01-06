@@ -1,5 +1,6 @@
 export type stringVoidFunction = (v: any) => void
 export type playerSchema = {
+    kicked: boolean,
     id: number,
     ava: string,
     name: string,

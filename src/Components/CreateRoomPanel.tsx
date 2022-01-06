@@ -10,16 +10,17 @@ import {
     Switch
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {stringVoidFunction} from "../interfaces";
+import {roomSchema, stringVoidFunction} from "../interfaces";
 
 interface input{
     setActivePanel: stringVoidFunction,
     setActiveView: stringVoidFunction,
     ws: null | WebSocket,
-    userData: object
+    userData: object,
+    roomData?: roomSchema | null
 }
 
-const CreateRoomPanel = ({setActivePanel, setActiveView, ws, userData}: input) => {
+const CreateRoomPanel = ({setActivePanel, ws, userData, roomData}: input) => {
     const inputHandler = (e: React.FormEvent<HTMLInputElement>) => {
         let val = e.currentTarget.value
         seedUpdate(Number(val))
@@ -37,7 +38,8 @@ const CreateRoomPanel = ({setActivePanel, setActiveView, ws, userData}: input) =
                 seed,
                 events,
                 willSurvive,
-                userData
+                userData,
+                roomData
             }
         }))
     }

@@ -31,6 +31,7 @@ function App() {
     const [activePanel, setActivePanel] = useState<string>('main')
     const [colorScheme, setColorScheme] = useState<AppearanceScheme>('bright_light')
     const [ws, setWS] = useState<null | WebSocket>(null)
+    const [survived, setSurvived] = useState<object[]>([])
     const [popout, setPopout] = useState<null | JSX.Element>(null)
     const [modal, setModal] = useState<null | string>(null)
     const [roomData, setRoomData] = useState<null | roomSchema>(null)
@@ -49,9 +50,9 @@ function App() {
     }, [userData])
 
     useEffect(() => {
-        //setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
+        setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
         bridge.send('VKWebAppInit').then(() => bridge.send("VKWebAppGetUserInfo"))
-        setWS(new WebSocket('ws://localhost:5500'))
+        //setWS(new WebSocket('ws://localhost:5500'))
     },[])
 
     useEffect(() => {
@@ -76,6 +77,12 @@ function App() {
             if(message.type === 'newTurn') setPopout(<NewTurnPopout roomData={roomData} ws={ws} close={() => setPopout(null)}/>)
             if(message.type === 'turnEnded') setModal('a')
             if(message.type === 'didBriefing') setModal(null)
+            if(message.type === 'gameEnded') {
+                setModal(null)
+                setSurvived(message.data.survived)
+                setActivePanel('results')
+            }
+            if(message.type === 'deleteRoom') {setRoomData(null); setActivePanel('main'); setActiveView('connect'); }
         }
     }, [roomData, userData, ws])
     useEffect(() => {
@@ -105,7 +112,7 @@ function App() {
                                     </Group>
                                 </Panel>
                                 <Panel id={'create'}>
-                                    <CreateRoomPanel ws={ws} setActiveView={setActiveView} setActivePanel={setActivePanel} userData={userData}/>
+                                    <CreateRoomPanel roomData={roomData} ws={ws} setActiveView={setActiveView} setActivePanel={setActivePanel} userData={userData}/>
                                 </Panel>
                                 <Panel id={'connect'}>
                                     <ConnectRoomPanel ws={ws} setActiveView={setActiveView} setActivePanel={setActivePanel} userData={userData}/>
@@ -155,10 +162,19 @@ function App() {
                                 <Panel id={'player'}>
                                     <UserPanel roomData={roomData} userData={userData} />
                                 </Panel>
+                                <Panel id={'results'}>
+                                    <PanelHeader>Выжившие</PanelHeader>
+                                    {<PlayersList roomData={roomData} special={survived} />}
+                                    {userData.id === roomData?.players[0].id && <div style={{display: "flex", margin: 10}}>
+                                        <Button onClick={() => {setActivePanel('create'); setActiveView('connect')}} stretched size={'l'}>Следующая карта</Button>
+                                        <div style={{width:10}}/>
+                                        <Button onClick={() => {ws.send(JSON.stringify({type: 'deleteRoom', data: {roomId: roomData?.id}}))}} stretched size={'l'}>Выход</Button>
+                                    </div>}
+                                </Panel>
                             </View>
                         </Root>
                         <FixedLayout>
-                            {activeView === 'game' && <BottomNav setActivePanel={setActivePanel} activePanel={activePanel}/>}
+                            {activeView === 'game' && activePanel !== 'results' && <BottomNav setActivePanel={setActivePanel} activePanel={activePanel}/>}
                         </FixedLayout>
                     </SplitLayout>
                 </AppRoot>
