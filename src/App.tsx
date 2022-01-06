@@ -24,14 +24,15 @@ import UserPanel from "./Components/UserPanel";
 import bridge from "@vkontakte/vk-bridge";
 import {AppearanceScheme} from "@vkontakte/vkui/dist/components/ConfigProvider/ConfigProviderContext";
 import NewTurnPopout from "./Components/NewTurnPopout";
+import TurnEndModal from "./Components/TurnEndModal";
 
 function App() {
     const [activeView, setActiveView] = useState<string>('connect')
     const [activePanel, setActivePanel] = useState<string>('main')
     const [colorScheme, setColorScheme] = useState<AppearanceScheme>('bright_light')
-    const [briefing, setBriefing] = useState<boolean>(false)
     const [ws, setWS] = useState<null | WebSocket>(null)
     const [popout, setPopout] = useState<null | JSX.Element>(null)
+    const [modal, setModal] = useState<null | string>(null)
     const [roomData, setRoomData] = useState<null | roomSchema>(null)
     const [userData, setUserData] = useState({
         vk_user_id: Number(getUrlParam('id')),
@@ -48,9 +49,9 @@ function App() {
     }, [userData])
 
     useEffect(() => {
-        setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
+        //setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
         bridge.send('VKWebAppInit').then(() => bridge.send("VKWebAppGetUserInfo"))
-        //setWS(new WebSocket('ws://localhost:5500'))
+        setWS(new WebSocket('ws://localhost:5500'))
     },[])
 
     useEffect(() => {
@@ -73,7 +74,8 @@ function App() {
                 setActiveView('game')
             }
             if(message.type === 'newTurn') setPopout(<NewTurnPopout roomData={roomData} ws={ws} close={() => setPopout(null)}/>)
-            if(message.type === 'turnEnded') setBriefing(true)
+            if(message.type === 'turnEnded') setModal('a')
+            if(message.type === 'didBriefing') setModal(null)
         }
     }, [roomData, userData, ws])
     useEffect(() => {
@@ -87,7 +89,7 @@ function App() {
         <ConfigProvider scheme={colorScheme} platform={Platform.IOS}>
             <AdaptivityProvider>
                 <AppRoot>
-                    <SplitLayout popout={popout}>
+                    <SplitLayout popout={popout} modal={<TurnEndModal setModal={setModal} roomData={roomData} userData={userData} modal={modal} ws={ws}/>}>
                         <Root activeView={activeView}>
                             <View id={'connect'} activePanel={activePanel}>
                                 <Panel id={'main'}>
@@ -146,10 +148,6 @@ function App() {
                                             </Card>
                                         </CardGrid>
                                     </Group>
-                                    {(roomData?.players[0].id === userData.id && briefing) && <Group>
-                                        <Button stretched size={'l'}>Следующий круг</Button>
-                                        <Button stretched size={'l'}>Голосование</Button>
-                                    </Group>}
                                 </Panel>
                                 <Panel id={'shelter'}>
 

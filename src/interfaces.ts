@@ -1,4 +1,4 @@
-export type stringVoidFunction = (v: string) => void
+export type stringVoidFunction = (v: any) => void
 export type playerSchema = {
     id: number,
     ava: string,
@@ -21,4 +21,4 @@ export interface roomSchema{
     currentTurn: number
 }
 
-export const statsKeys = ['health', 'hobby', 'threat']
+export const statsKeys = ['health', 'hobby', 'gender', 'equipment', 'character', 'phobia', 'additional']
