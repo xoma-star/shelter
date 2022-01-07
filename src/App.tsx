@@ -192,7 +192,7 @@ function App() {
                                     <Group header={<Header mode={'secondary'}>припасы</Header>}>
                                         <CardGrid size={'l'}>
                                             <Card style={{padding: 15}}>
-                                                {roomData?.foods + '. Хватит на '+ roomData?.duration + ' мес.'}
+                                                {roomData?.foods + '. Хватит на '+roomData?.willSurvive+' чел. на '+ roomData?.duration + ' мес.'}
                                             </Card>
                                         </CardGrid>
                                     </Group>
