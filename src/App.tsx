@@ -36,7 +36,7 @@ function App() {
     const [modal, setModal] = useState<null | string>(null)
     const [roomData, setRoomData] = useState<null | roomSchema>(null)
     const [userData, setUserData] = useState({
-        vk_user_id: Number(getUrlParam('id')),
+        vk_user_id: Number(getUrlParam('vk_user_id')),
         ava: 'https://sun9-74.userapi.com/impg/lwRe51lpHrWKjCUyRuZ4QnxP-Nb0oK-9rlCXrQ/Bl2aPke2WYY.jpg?size=1252x1279&quality=96&sign=6567e2ebac1fdc0018bda287e195f047&type=album',
         name: 'Лучший',
         id: null
@@ -74,7 +74,7 @@ function App() {
                 setActivePanel('distress')
                 setActiveView('game')
             }
-            if(message.type === 'newTurn') setPopout(<NewTurnPopout roomData={roomData} ws={ws} close={() => setPopout(null)}/>)
+            if(message.type === 'newTurn') setPopout(<NewTurnPopout userData={userData} roomData={roomData} ws={ws} close={() => setPopout(null)}/>)
             if(message.type === 'turnEnded') setModal('a')
             if(message.type === 'didBriefing') setModal(null)
             if(message.type === 'gameEnded') {
@@ -155,6 +155,9 @@ function App() {
                                             </Card>
                                         </CardGrid>
                                     </Group>
+                                    {roomData?.players[0].id === userData.id && roomData?.players[0]?.revealed?.length === 0 && <div style={{display: 'flex', margin: 15}}>
+                                        <Button stretched size={'l'} onClick={() => ws.send(JSON.stringify({type: 'startConfirm', data: {roomId: roomData?.id}}))}>Начать</Button>
+                                    </div>}
                                 </Panel>
                                 <Panel id={'shelter'}>
 
