@@ -2,7 +2,7 @@ import {roomSchema, stringVoidFunction} from "../interfaces";
 import {Avatar, Cell} from "@vkontakte/vkui";
 import React from "react";
 
-const PlayersList = ({roomData, onclick = null, special = null}: {roomData: roomSchema | null, onclick?: null | stringVoidFunction, special?: null | object[]}) => {
+const PlayersList = ({roomData, onclick = null, special = null, onRemove = null}: {roomData: roomSchema | null, onclick?: null | stringVoidFunction, special?: null | object[], onRemove?: null | stringVoidFunction}) => {
     let tomap: any
     if(special) tomap = special
     else if(roomData) tomap = roomData.players
@@ -15,6 +15,7 @@ const PlayersList = ({roomData, onclick = null, special = null}: {roomData: room
                 after={i === 0 ? 'Хост' : ''}
                 description={special ? '' : (v.kicked ? 'исключен' : `Игрок ${i+1}`)}
                 onRemove={onclick ? () => onclick(i) : () => {}}
+                onClick={onRemove ? () => onRemove(i) : () => {}}
                 removable={onclick !== null}
             >
                 {v.name}

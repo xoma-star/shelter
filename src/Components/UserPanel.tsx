@@ -36,7 +36,7 @@ const UserPanel = ({roomData, userData}: {roomData: roomSchema | null, userData:
                     {// @ts-ignore
                         Object.keys(userStats.stats).map((v: any) => {
                         // @ts-ignore
-                            return <Cell before={icons[v]} description={description[v]}>
+                            return <Cell multiline before={icons[v]} description={description[v] + roomData?.players[roomData?.currentTurn].revealed.indexOf(v) > -1 ? 'Раскрыта' : ''}>
                             {// @ts-ignore
                                 userStats?.stats[v]}
                         </Cell>

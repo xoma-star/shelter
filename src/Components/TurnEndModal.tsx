@@ -11,16 +11,18 @@ import {
 import {roomSchema, stringVoidFunction} from "../interfaces";
 import React from "react";
 import PlayersList from "./PlayersList";
+import NewTurnPopout from "./NewTurnPopout";
 
 interface props{
     setModal: stringVoidFunction,
     roomData: roomSchema | null,
     userData: any,
     modal: string | null,
-    ws: WebSocket
+    ws: WebSocket,
+    setPopout?: any
 }
 
-const TurnEndModal = ({setModal, roomData, userData, modal, ws}: props) => {
+const TurnEndModal = ({setModal, roomData, userData, modal, ws, setPopout}: props) => {
     const endTurn = () => {
         ws.send(JSON.stringify({type: 'newTurn', data: {roomId: roomData?.id}}))
     }
@@ -45,6 +47,9 @@ const TurnEndModal = ({setModal, roomData, userData, modal, ws}: props) => {
                     Ждем хоста <Spinner size={'small'}/>
                 </Caption>
             </Group>}
+            <Group header={<Header mode={'secondary'}>Характеристики</Header>}>
+                <PlayersList roomData={roomData} onRemove={(v: number) => setPopout(<NewTurnPopout viewPlayer={v} userData={userData} roomData={roomData} ws={ws} close={() => setPopout(null)}/>)} />
+            </Group>
         </ModalPage>
     </ModalRoot>
 }

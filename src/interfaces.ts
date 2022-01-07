@@ -19,7 +19,11 @@ export interface roomSchema{
     seed: number,
     waitingForPlayers: boolean,
     distress?: string,
-    currentTurn: number
+    currentTurn: number,
+    shelterLocation?: string,
+    rooms: any[],
+    duration: number,
+    foods: string
 }
 
 export const statsKeys = ['health', 'hobby', 'gender', 'equipment', 'character', 'phobia', 'additional']

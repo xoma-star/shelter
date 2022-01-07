@@ -25,8 +25,29 @@ import bridge from "@vkontakte/vk-bridge";
 import {AppearanceScheme} from "@vkontakte/vkui/dist/components/ConfigProvider/ConfigProviderContext";
 import NewTurnPopout from "./Components/NewTurnPopout";
 import TurnEndModal from "./Components/TurnEndModal";
+import {
+    Icon24AppleOutline, Icon24ArmchairOutline,
+    Icon24BroadcastOutline,
+    Icon24EducationOutline, Icon24Flash,
+    Icon24GunOutline, Icon24HangerOutline,
+    Icon24LikeOutline,
+    Icon24WasherOutline, Icon28BusOutline, Icon28CanisterOutline
+} from "@vkontakte/icons";
 
 function App() {
+    const roomIcons = {
+        weapon: <Icon24GunOutline/>,
+        hospital: <Icon24LikeOutline/>,
+        research: <Icon24EducationOutline/>,
+        chemical: <Icon24WasherOutline/>,
+        radio: <Icon24BroadcastOutline/>,
+        growFood: <Icon24AppleOutline/>,
+        bedroom: <Icon24ArmchairOutline/>,
+        garage: <Icon28BusOutline width={24} height={24}/>,
+        fuel: <Icon28CanisterOutline width={24} height={24}/>,
+        equipment: <Icon24HangerOutline/>,
+        energy: <Icon24Flash/>
+    }
     const [activeView, setActiveView] = useState<string>('connect')
     const [activePanel, setActivePanel] = useState<string>('main')
     const [colorScheme, setColorScheme] = useState<AppearanceScheme>('bright_light')
@@ -52,7 +73,7 @@ function App() {
     useEffect(() => {
         setWS(new WebSocket('wss://server-shelter.herokuapp.com/'))
         bridge.send('VKWebAppInit').then(() => bridge.send("VKWebAppGetUserInfo"))
-        //setWS(new WebSocket('ws://localhost:5500'))
+        // setWS(new WebSocket('ws://localhost:5500'))
     },[])
 
     useEffect(() => {
@@ -91,12 +112,13 @@ function App() {
         if(ws) ws.onclose = () => clearInterval(clear)
     }, [ws])
 
+    // @ts-ignore
     return (
         ws &&
         <ConfigProvider scheme={colorScheme} platform={Platform.IOS}>
             <AdaptivityProvider>
                 <AppRoot>
-                    <SplitLayout popout={popout} modal={<TurnEndModal setModal={setModal} roomData={roomData} userData={userData} modal={modal} ws={ws}/>}>
+                    <SplitLayout popout={popout} modal={<TurnEndModal setPopout={setPopout} setModal={setModal} roomData={roomData} userData={userData} modal={modal} ws={ws}/>}>
                         <Root activeView={activeView}>
                             <View id={'connect'} activePanel={activePanel}>
                                 <Panel id={'main'}>
@@ -136,7 +158,7 @@ function App() {
                                         <CardGrid size={'l'}>
                                             <Card>
                                                 <List>
-                                                    <PlayersList roomData={roomData}/>
+                                                    <PlayersList onRemove={(v: number) => setPopout(<NewTurnPopout viewPlayer={v} userData={userData} roomData={roomData} ws={ws} close={() => setPopout(null)}/>)} roomData={roomData}/>
                                                 </List>
                                             </Card>
                                         </CardGrid>
@@ -160,7 +182,30 @@ function App() {
                                     </div>}
                                 </Panel>
                                 <Panel id={'shelter'}>
-
+                                    <Group header={<Header mode={'secondary'}>расположение</Header>}>
+                                        <CardGrid size={'l'}>
+                                            <Card style={{padding: 15}}>
+                                                {roomData?.shelterLocation}
+                                            </Card>
+                                        </CardGrid>
+                                    </Group>
+                                    <Group header={<Header mode={'secondary'}>припасы</Header>}>
+                                        <CardGrid size={'l'}>
+                                            <Card style={{padding: 15}}>
+                                                {roomData?.foods + '. Хватит на '+ roomData?.duration + ' мес.'}
+                                            </Card>
+                                        </CardGrid>
+                                    </Group>
+                                    <Group header={<Header mode={'secondary'}>оснащение</Header>}>
+                                        <CardGrid size={'l'}>
+                                            <Card style={{padding: 15}}>
+                                                {roomData?.rooms?.map(v => <Cell
+                                                    //@ts-ignore
+                                                    before={roomIcons[v.icon]} description={v.condition}>{v.name}</Cell>)}
+                                            </Card>
+                                        </CardGrid>
+                                    </Group>
+                                    <div style={{height: 58}}/>
                                 </Panel>
                                 <Panel id={'player'}>
                                     <UserPanel roomData={roomData} userData={userData} />
