@@ -31,7 +31,7 @@ const UserPanel = ({roomData, userData}: {roomData: roomSchema | null, userData:
         equipment: 'снаряжение',
         profession: 'профессия'
     }
-    return <Group header={<Header mode={'secondary'}>Характеристики</Header>}>
+    return <Group header={<Header mode={'secondary'}>ваши характеристики</Header>}>
         <CardGrid size={'l'}>
             <Card>
                 <List>

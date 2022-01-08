@@ -77,6 +77,7 @@ function App() {
     },[])
 
     useEffect(() => {
+        if(ws) ws.onclose = () => {}
         if (ws) ws.onmessage = (m) => {
             let message = JSON.parse(m.data)
             if(message.type === 'createdRoom'){
@@ -108,7 +109,7 @@ function App() {
     }, [roomData, userData, ws])
     useEffect(() => {
         let clear: NodeJS.Timer
-        if(ws) ws.onopen = () => clear = setInterval(() => ws.send(JSON.stringify({ping: 'pong'})), 45000)
+        if(ws) ws.onopen = () => clear = setInterval(() => ws.send(JSON.stringify({ping: 'pong'})), 30000)
         if(ws) ws.onclose = () => clearInterval(clear)
     }, [ws])
 

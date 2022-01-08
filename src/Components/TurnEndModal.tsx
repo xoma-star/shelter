@@ -12,6 +12,7 @@ import {roomSchema, stringVoidFunction} from "../interfaces";
 import React, {useState} from "react";
 import PlayersList from "./PlayersList";
 import NewTurnPopout from "./NewTurnPopout";
+import UserPanel from "./UserPanel";
 
 interface props{
     setModal: stringVoidFunction,
@@ -78,6 +79,7 @@ const TurnEndModal = ({setModal, roomData, userData, modal, ws, setPopout}: prop
             <Group header={<Header mode={'secondary'}>Характеристики</Header>}>
                 <PlayersList roomData={roomData} onRemove={(v: number) => setPopout(<NewTurnPopout viewPlayer={v} userData={userData} roomData={roomData} ws={ws} close={() => setPopout(null)}/>)} />
             </Group>
+            <UserPanel roomData={roomData} userData={userData}/>
         </ModalPage>
     </ModalRoot>
 }
