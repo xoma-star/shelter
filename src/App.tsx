@@ -108,10 +108,10 @@ function App() {
         }
     }, [roomData, userData, ws])
     useEffect(() => {
-        let clear: NodeJS.Timer
-        if(ws) ws.onopen = () => clear = setInterval(() => ws.send(JSON.stringify({ping: 'pong'})), 30000)
-        if(ws) ws.onclose = () => clearInterval(clear)
-    }, [ws])
+        // let clear: NodeJS.Timer
+        // if(ws) ws.onopen = () => clear = setInterval(() => ws.send(JSON.stringify({ping: 'pong'})), 30000)
+        if(ws) ws.onclose = () => setWS(new WebSocket('wss://server-shelter.herokuapp.com/?type=reconnect&userId='+userData.id))
+    }, [ws, userData.id])
 
     // @ts-ignore
     return (
