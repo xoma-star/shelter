@@ -5,10 +5,10 @@ export type playerSchema = {
     ava: string,
     name: string,
     isHost: boolean,
-    stats: {[key: typeof statsKeys[number]]: string},
-    revealed: string[]
+    stats: { [key: typeof statsKeys[number]]: string },
+    revealed: string[],
+    cards: any[]
 }
-
 export interface roomSchema{
     id: number,
     players: playerSchema[],

@@ -11,7 +11,8 @@ const NewTurnPopout = ({roomData, ws, close, viewPlayer}: {roomData: roomSchema 
         character: 'характер',
         phobia: 'фобия',
         additional: 'дополнительно',
-        equipment: 'снаряжение'
+        equipment: 'снаряжение',
+        profession: 'профессия'
     }
     //@ts-ignore
     const [a, b] = useState<string>(Object.keys(roomData?.players[roomData?.currentTurn].stats).filter((x: typeof statsKeys[number]) => {

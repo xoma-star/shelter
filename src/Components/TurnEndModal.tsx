@@ -3,13 +3,13 @@ import {
     Caption, Card,
     CardGrid,
     Group,
-    Header,
+    Header, Input,
     ModalPage,
     ModalRoot,
     Spinner
 } from "@vkontakte/vkui";
 import {roomSchema, stringVoidFunction} from "../interfaces";
-import React from "react";
+import React, {useState} from "react";
 import PlayersList from "./PlayersList";
 import NewTurnPopout from "./NewTurnPopout";
 
@@ -26,13 +26,41 @@ const TurnEndModal = ({setModal, roomData, userData, modal, ws, setPopout}: prop
     const endTurn = () => {
         ws.send(JSON.stringify({type: 'newTurn', data: {roomId: roomData?.id}}))
     }
+    const [inputVal, setInputVal] = useState(0)
+    let playerCards = roomData?.players.find(x => x.id === userData.id)
     return <ModalRoot activeModal={modal}>
         <ModalPage settlingHeight={100} id={'a'} onClose={() => {setModal(null); if(userData.id === roomData?.players[0].id) endTurn();}}>
             <Group header={<Header mode={'secondary'}>Карточки способностей</Header>}>
-                <CardGrid size={'m'}>
-                    <Card style={{paddingTop: 100}}/>
-                    <Card style={{paddingTop: 100}}/>
-                </CardGrid>
+                {typeof playerCards?.cards !== 'undefined' && <CardGrid size={'m'}>
+                    <Card><div style={{padding: 15}}>
+                        {typeof playerCards !== 'undefined' && playerCards?.cards[0]?.data?.description}
+                        <Input value={inputVal}
+                               onChange={e => setInputVal(Number(e.currentTarget.value))} style={playerCards?.cards[0]?.data?.needInput ? {} : {display: 'none'}} placeholder={'номер'}/>
+                        <Button onClick={() => ws.send(JSON.stringify({
+                            type: 'useCard',
+                            data: {
+                                roomId: roomData?.id,
+                                playerId: roomData?.players.findIndex(x => x.id === userData.id),
+                                cardId: 0,
+                                inputVal
+                            }
+                        }))} disabled={playerCards?.cards[0]?.used} style={{marginTop: 10}} stretched size={'m'}>Использовать</Button>
+                    </div></Card>
+                    <Card><div style={{padding: 15}}>
+                        {playerCards?.cards[1]?.data?.description}
+                        <Input value={inputVal}
+                               onChange={e => setInputVal(Number(e.currentTarget.value))} style={playerCards?.cards[1]?.data?.needInput ? {} : {display: 'none'}} placeholder={'номер'}/>
+                        <Button onClick={() => ws.send(JSON.stringify({
+                            type: 'useCard',
+                            data: {
+                                roomId: roomData?.id,
+                                playerId: roomData?.players.findIndex(x => x.id === userData.id),
+                                cardId: 1,
+                                inputVal
+                            }
+                        }))} disabled={playerCards?.cards[1]?.used} style={{marginTop: 10}} stretched size={'m'}>Использовать</Button>
+                    </div></Card>
+                </CardGrid>}
             </Group>
             {(roomData?.players[0].id === userData.id) && <Group>
                 <div style={{display: 'flex', padding: 10}}>

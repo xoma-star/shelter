@@ -3,7 +3,7 @@ import React from "react";
 import {roomSchema} from "../interfaces";
 import {
     Icon24BrainOutline, Icon24BriefcaseOutline,
-    Icon24BugOutline,
+    Icon24BugOutline, Icon24EmployeeOutline,
     Icon24HorseToyOutline, Icon24KeyboardBotsOutline,
     Icon24LikeOutline,
     Icon24UserOutline
@@ -18,7 +18,8 @@ const UserPanel = ({roomData, userData}: {roomData: roomSchema | null, userData:
         character: <Icon24BrainOutline/>,
         phobia: <Icon24BugOutline/>,
         additional: <Icon24KeyboardBotsOutline/>,
-        equipment: <Icon24BriefcaseOutline/>
+        equipment: <Icon24BriefcaseOutline/>,
+        profession: <Icon24EmployeeOutline/>
     }
     const description = {
         health: 'здоровье',
@@ -27,7 +28,8 @@ const UserPanel = ({roomData, userData}: {roomData: roomSchema | null, userData:
         character: 'характер',
         phobia: 'фобия',
         additional: 'дополнительно',
-        equipment: 'снаряжение'
+        equipment: 'снаряжение',
+        profession: 'профессия'
     }
     return <Group header={<Header mode={'secondary'}>Характеристики</Header>}>
         <CardGrid size={'l'}>
